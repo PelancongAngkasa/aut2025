@@ -1,4 +1,4 @@
-import unittest
+import unittest, sys
 from selenium import webdriver
 from selenium.webdriver.common.by import By 
 class AutTest (unittest.TestCase):
