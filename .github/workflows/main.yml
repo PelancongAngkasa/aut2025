@@ -45,5 +45,11 @@ jobs:
     - name: Run tests
       run: python tests/hello_aut.py ${{ env.URL }}
 
+    - name: 'Upload Artifact'
+      uses: actions/upload-artifact@v4
+      with:
+        name: Screenshot
+        path: 'screenshot.png'
+        
     - name: stop docker 
       run: docker stop docker-apache
