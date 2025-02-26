@@ -43,7 +43,7 @@ jobs:
       run: pip install -U selenium
 
     - name: Run tests
-      run: python tests/hello_example.py
+      run: python tests/hello_aut.py ${{ env.URL }}
 
     - name: stop docker 
       run: docker stop docker-apache
