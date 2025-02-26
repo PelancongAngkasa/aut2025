@@ -1,1 +1,34 @@
+name: OTF Testing 
+on: 
+  push: 
+    branches: 
+      - main 
 
+jobs: 
+  test: 
+    name: Functional Test
+    permissions: write-all 
+    runs-on: ubuntu-latest
+    steps:  
+    - name: Checkout the repo
+      uses: actions/checkout@v4 
+
+    - name: Create isolated network 
+      run: docker network create --driver bridge isolated
+
+    - name: Deploy AUT 
+      run: docker build -t my-php-site:latest . 
+
+    - name: Run AUT 
+      run: docker run --network-isolated -p 80:80 --name docker-apache -t -d my-php-site: latest 
+
+    - name: Get AUT URL 
+      run: | 
+        URL=http://$(ip -f inet -o addr show docker0 | awk '{print $4}' | cut -d '/' -f 1) 
+        echo "URL=$URL" >> $GITHUB_ENV 
+
+    - name: Check AUT Url 
+      run: curl ${{ env.URL }} 
+      
+    - name: stop docker 
+      run: docker stop docker-apache
