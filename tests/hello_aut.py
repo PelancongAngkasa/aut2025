@@ -19,7 +19,7 @@ class AutTest (unittest.TestCase):
             url = "http://localhost"
         
         self.browser.get(url)
-        expected_result = "Welcome back, Guests!"
+        expected_result = "Welcome back, Guest!"
         actual_result = self.browser.find_element(By.TAG_NAME, 'p')
 
         self.assertIn(expected_result, actual_result.text)
