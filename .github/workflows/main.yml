@@ -50,6 +50,7 @@ jobs:
       with:
         name: Screenshot
         path: 'screenshot.png'
-        
+
     - name: stop docker 
       run: docker stop docker-apache
+
