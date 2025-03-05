@@ -33,11 +33,27 @@ jobs:
     - name: ZAP Scan
       uses: hermanka/action-full-scan@master
       with:
-        target: ${{ env.URL }}
-        network: isolated
+          target: ${{ env.URL }}
+          network_name: zap-isolated
 
     - name: stop docker
       run: docker stop docker-apache
+  
+  sast:
+    name: Psalm
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Psalm Security Scan
+      uses: docker://ghcr.io/psalm/psalm-security-scan
+
+    - name: Import Security Analysis results into Github Security Code Scanning
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: results.sarif
     
   sonar:
     name: SonarCloud Scan
@@ -47,26 +63,12 @@ jobs:
       - name: Checkout the repository
         uses: actions/checkout@v4
 
-      - name: Set up JDK 17 (Required for SonarCloud)
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-
-      - name: Cache SonarCloud scanner
-        uses: actions/cache@v4
-        with:
-          path: ~/.sonar/cache
-          key: sonar-scanner-cli
-          restore-keys: sonar-scanner-cli
-
       - name: Run SonarCloud Scan
-        uses: SonarSource/sonarqube-scan-action@v5.0.0
+        uses: SonarSource/sonarcloud-github-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
             -Dsonar.organization=pelancongangkasa
             -Dsonar.projectKey=PelancongAngkasa_aut2025
-            -Dsonar.sources=.
-            -Dsonar.host.url=https://sonarcloud.io
+           
